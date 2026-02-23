@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper: check if user is in the authorized_users collection
+    function isAuthorized() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/authorized_users/$(request.auth.token.email));
+    }
+
+    // Concesiones mineras - solo lectura para usuarios autorizados
+    match /concesiones/{concesionId} {
+      allow read: if isAuthorized();
+      allow write: if false; // Solo via Admin SDK (scripts)
+    }
+
+    // Metadata de concesiones
+    match /concesiones_metadata/{docId} {
+      allow read: if isAuthorized();
+      allow write: if false;
+    }
+
+    // Lista de usuarios autorizados - solo lectura para autenticados
+    match /authorized_users/{email} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Solo via Admin SDK (scripts)
+    }
+
+    // Default: deny all access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
