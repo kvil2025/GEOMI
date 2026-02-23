@@ -1,0 +1,298 @@
+/* ── Slope Map Panel ───────────────────────────────── */
+.slope-panel {
+    margin-top: 4px;
+}
+
+.slope-panel .section-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+/* ── Draw button ──────────────────────────────────── */
+.slope-draw-btn {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px dashed rgba(0, 210, 255, 0.4);
+    border-radius: var(--radius-sm);
+    background: rgba(0, 210, 255, 0.08);
+    color: var(--accent-teal);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.slope-draw-btn:hover {
+    background: rgba(0, 210, 255, 0.15);
+    border-color: rgba(0, 210, 255, 0.6);
+}
+
+.slope-draw-btn.active {
+    background: rgba(0, 210, 255, 0.2);
+    border-style: solid;
+    border-color: var(--accent-teal);
+    animation: pulse-border 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 0 4px rgba(0, 210, 255, 0);
+    }
+}
+
+.slope-draw-btn.has-bbox {
+    border-style: solid;
+    border-color: rgba(76, 175, 80, 0.6);
+    background: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+}
+
+/* ── Resolution selector ──────────────────────────── */
+.slope-resolution {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.slope-resolution label {
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.slope-resolution select {
+    flex: 1;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-primary);
+    font-size: 0.72rem;
+    cursor: pointer;
+}
+
+/* ── Range table ──────────────────────────────────── */
+.slope-ranges {
+    margin: 10px 0;
+}
+
+.slope-ranges-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.slope-range-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 0;
+    font-size: 0.7rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.slope-range-color {
+    width: 22px;
+    height: 18px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.slope-range-color input[type="color"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.slope-range-input {
+    width: 42px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    border: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-primary);
+    font-size: 0.68rem;
+    text-align: center;
+}
+
+.slope-range-label {
+    color: var(--text-muted);
+    flex: 1;
+    font-size: 0.67rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.slope-range-delete {
+    background: none;
+    border: none;
+    color: #f44336;
+    cursor: pointer;
+    font-size: 0.65rem;
+    padding: 0 2px;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+}
+
+.slope-range-delete:hover {
+    opacity: 1;
+}
+
+.slope-add-range {
+    width: 100%;
+    padding: 4px;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: all 0.15s;
+}
+
+.slope-add-range:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: var(--text-secondary);
+}
+
+/* ── Generate button ──────────────────────────────── */
+.slope-generate-btn {
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, #38a800, #267300);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.slope-generate-btn:hover:not(:disabled) {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(56, 168, 0, 0.3);
+}
+
+.slope-generate-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+}
+
+/* ── Stats bar ────────────────────────────────────── */
+.slope-stats {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.slope-stat {
+    flex: 1;
+    min-width: 60px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.slope-stat-value {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.slope-stat-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ── Map legend (floating) ────────────────────────── */
+.slope-legend {
+    position: absolute;
+    bottom: 40px;
+    right: 12px;
+    background: rgba(15, 20, 30, 0.88);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px 12px;
+    z-index: 10;
+    min-width: 140px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.slope-legend-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.slope-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0;
+    font-size: 0.68rem;
+    color: var(--text-primary);
+}
+
+.slope-legend-swatch {
+    width: 18px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ── Drawing crosshair cursor ─────────────────────── */
+.map-container.drawing-mode {
+    cursor: crosshair !important;
+}
+
+.map-container.drawing-mode .maplibregl-canvas {
+    cursor: crosshair !important;
+}

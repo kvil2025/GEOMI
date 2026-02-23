@@ -1,0 +1,59 @@
+.elevation-panel {
+    position: absolute;
+    bottom: 16px;
+    left: calc(var(--sidebar-width) + 16px);
+    right: 16px;
+    padding: var(--space-4);
+    z-index: 10;
+}
+
+.elevation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-3);
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.elevation-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-sm);
+    font-weight: 600;
+}
+
+.elevation-stats {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: var(--font-sm);
+    font-weight: 600;
+}
+
+.elevation-chart-wrapper {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .elevation-panel {
+        left: 16px;
+        bottom: 12px;
+    }
+}

@@ -1,0 +1,83 @@
+.map-container {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.map-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    background: var(--bg-primary);
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+    z-index: 1;
+}
+
+.map-loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(0, 210, 255, 0.15);
+    border-top-color: var(--accent-teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Dark popup styling */
+.dark-popup .maplibregl-popup-content {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-3);
+    font-size: var(--font-xs);
+    line-height: 1.6;
+    max-width: 280px;
+}
+
+.dark-popup .maplibregl-popup-tip {
+    border-top-color: var(--bg-secondary);
+}
+
+.dark-popup .maplibregl-popup-close-button {
+    color: var(--text-muted);
+    font-size: 18px;
+    right: 4px;
+    top: 2px;
+}
+
+.popup-content strong {
+    color: var(--accent-teal);
+}
+
+/* Override maplibre defaults */
+.maplibregl-ctrl-group {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-sm) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.maplibregl-ctrl-group button {
+    background-color: transparent !important;
+    border-color: var(--border-color) !important;
+}
+
+.maplibregl-ctrl-group button+button {
+    border-top: 1px solid var(--border-color) !important;
+}
+
+.maplibregl-ctrl-group button span {
+    filter: invert(1);
+}
