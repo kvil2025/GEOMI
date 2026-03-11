@@ -1,0 +1,71 @@
+.slope-histogram {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.slope-histogram-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary, #a0aec0);
+    margin: 0 0 10px 0;
+}
+
+.histogram-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.histogram-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.histogram-label {
+    font-size: 0.68rem;
+    color: var(--text-muted, #718096);
+    min-width: 48px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.histogram-bar-track {
+    flex: 1;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.histogram-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 2px;
+    opacity: 0.85;
+}
+
+.histogram-value {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-primary, #e2e8f0);
+    min-width: 55px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.histogram-count {
+    font-weight: 400;
+    color: var(--text-muted, #718096);
+    font-size: 0.62rem;
+    margin-left: 2px;
+}

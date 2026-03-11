@@ -50,6 +50,7 @@ const MAP_STYLE = {
 
 export default function MapView({
     concessions, userGeoJSON, intersectionResult, slopeData,
+    geologyData, geologyLegend,
     onMapReady, onBboxChange, baseMap = 'carto',
     drawingMode, onRectangleDrawn, slopeRanges, showSlopeLegend,
 }) {
@@ -281,6 +282,66 @@ export default function MapView({
         }
     }, [slopeData, slopeRanges, loaded]);
 
+    // ── Geology layer ──────────────────────────────────────────────
+    useEffect(() => {
+        const map = mapRef.current;
+        if (!map || !loaded) return;
+
+        if (!geologyData || !geologyData.features) {
+            if (map.getLayer('geology-fill')) map.removeLayer('geology-fill');
+            if (map.getLayer('geology-outline')) map.removeLayer('geology-outline');
+            if (map.getSource('geology')) map.removeSource('geology');
+            return;
+        }
+
+        if (map.getSource('geology')) {
+            map.getSource('geology').setData(geologyData);
+        } else {
+            map.addSource('geology', { type: 'geojson', data: geologyData });
+            
+            // Insert geology before concessions if possible
+            const beforeLayer = map.getLayer('concessions-fill') ? 'concessions-fill' : undefined;
+            
+            map.addLayer({
+                id: 'geology-fill',
+                type: 'fill',
+                source: 'geology',
+                paint: {
+                    'fill-color': ['get', '_color'],
+                    'fill-opacity': 0.55,
+                },
+            }, beforeLayer);
+            map.addLayer({
+                id: 'geology-outline',
+                type: 'line',
+                source: 'geology',
+                paint: {
+                    'line-color': 'rgba(0,0,0,0.2)',
+                    'line-width': 0.5,
+                },
+            }, beforeLayer);
+
+            // Click popup with geological info
+            map.on('click', 'geology-fill', (e) => {
+                const p = e.features[0]?.properties || {};
+                const html = [
+                    `<strong>Código:</strong> ${p.geo || '?'}`,
+                    `<strong>Era:</strong> ${p.era || '?'}`,
+                    `<strong>Período:</strong> ${p.periodo || '?'}`,
+                    `<strong>Época:</strong> ${p.epoca || '?'}`,
+                    `<strong>Composición:</strong> ${p.composicio || '?'}`,
+                    p.ha ? `<strong>Área:</strong> ${Number(p.ha).toLocaleString()} ha` : '',
+                ].filter(Boolean).join('<br/>');
+                new maplibregl.Popup({ className: 'dark-popup' })
+                    .setLngLat(e.lngLat)
+                    .setHTML(`<div class="popup-content">${html}</div>`)
+                    .addTo(map);
+            });
+            map.on('mouseenter', 'geology-fill', () => { map.getCanvas().style.cursor = 'pointer'; });
+            map.on('mouseleave', 'geology-fill', () => { map.getCanvas().style.cursor = ''; });
+        }
+    }, [geologyData, loaded]);
+
     // ── Rectangle drawing logic ────────────────────────────────────
     useEffect(() => {
         const map = mapRef.current;
@@ -381,6 +442,73 @@ export default function MapView({
                 </div>
             )}
             <SlopeLegend ranges={slopeRanges} visible={showSlopeLegend && slopeData} />
+            <GeologyLegend legend={geologyLegend} visible={!!geologyData} />
+        </div>
+    );
+}
+
+/* ── Geology Legend (floating on map) – shows actual lithologies ── */
+function GeologyLegend({ legend, visible }) {
+    const [expanded, setExpanded] = useState(true);
+
+    if (!visible || !legend || !Array.isArray(legend) || legend.length === 0) return null;
+
+    // Group legend entries by era
+    const grouped = {};
+    for (const entry of legend) {
+        const era = entry.era || 'Otro';
+        if (!grouped[era]) grouped[era] = [];
+        grouped[era].push(entry);
+    }
+
+    const eraLabels = {
+        'CENOZOICO': 'Cenozoico',
+        'MEZOZOICO': 'Mesozoico',
+        'PALEOZOICO': 'Paleozoico',
+        'PRECAMBRICO': 'Precámbrico',
+        'S I': 'Sin clasificar',
+        'Sin Informacion': 'Sin información',
+    };
+
+    return (
+        <div className="geology-legend">
+            <div
+                className="geology-legend-header"
+                onClick={() => setExpanded(!expanded)}
+            >
+                <span className="geology-legend-title">
+                    🪨 Litología ({legend.length})
+                </span>
+                <span className="geology-legend-toggle">
+                    {expanded ? '▼' : '▶'}
+                </span>
+            </div>
+
+            {expanded && (
+                <div className="geology-legend-body">
+                    {Object.entries(grouped).map(([era, entries]) => (
+                        <div key={era} className="geology-legend-group">
+                            <div className="geology-legend-era">
+                                {eraLabels[era] || era}
+                            </div>
+                            {entries.map((entry) => (
+                                <div key={entry.geo} className="geology-legend-item">
+                                    <div
+                                        className="geology-legend-swatch"
+                                        style={{ background: entry.color }}
+                                    />
+                                    <div className="geology-legend-info">
+                                        <span className="geology-legend-code">{entry.geo}</span>
+                                        <span className="geology-legend-desc">
+                                            {entry.composicion}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

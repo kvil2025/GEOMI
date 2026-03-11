@@ -56,7 +56,7 @@ async def get_elevation_profile(line_geojson: dict, interval: float = 100.0):
     # 3. Fetch elevations
     # ------------------------------------------------------------------
     try:
-        elevations = await fetch_elevations(sampled)
+        elevations, _source = await fetch_elevations(sampled)
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"Elevation lookup failed: {exc}")
 

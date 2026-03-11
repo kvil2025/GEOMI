@@ -9,10 +9,13 @@ import requests
 router = APIRouter()
 
 # ── PATHS ─────────────────────────────────────────────────────────────────
-_DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
+_DATA_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'data'))
 _SAMPLE_FILE = os.path.join(_DATA_DIR, 'sample_concessions.json')
 _CACHE_DIR = os.path.join(_DATA_DIR, 'cache')
-os.makedirs(_CACHE_DIR, exist_ok=True)
+try:
+    os.makedirs(_CACHE_DIR, exist_ok=True)
+except FileExistsError:
+    pass  # Directory already exists, macOS extended attributes quirk
 
 # ── SERNAGEOMIN ArcGIS FeatureServer ──────────────────────────────────────
 # Source: https://appsngmaz.sernageomin.cl/catastro_SNGM/home/index

@@ -59,13 +59,6 @@ OPEN_ELEVATION_URL = "https://api.open-elevation.com/api/v1/lookup"
 OPENTOPO_URL = "https://portal.opentopography.org/API/globaldem"
 _BATCH_SIZE = 100
 
-_last_source = "unknown"  # Track which source was used
-
-
-def get_last_elevation_source() -> str:
-    """Return the name of the last elevation data source used."""
-    return _last_source
-
 
 def _get_opentopo_key() -> str:
     """Read OpenTopography API key at call time (after dotenv loads)."""
@@ -157,8 +150,10 @@ def _synthetic_elevations(points: List[Dict[str, float]]) -> List[float]:
 async def fetch_elevations(
     points: List[Dict[str, float]],
     bbox: Tuple[float, float, float, float] = None,
-) -> List[float]:
+) -> Tuple[List[float], str]:
     """Fetch elevation data using the best available source.
+
+    Returns a tuple of (elevations, source_name) for thread safety.
 
     Priority:
       1. LiDAR local GeoTIFF (if one covers the bbox)
@@ -166,8 +161,6 @@ async def fetch_elevations(
       3. Open-Elevation API (SRTM)
       4. Synthetic fallback
     """
-    global _last_source
-
     # 1. Try local LiDAR
     if bbox:
         try:
@@ -176,9 +169,8 @@ async def fetch_elevations(
             if lidar_path:
                 result = sample_lidar_elevations(lidar_path, points)
                 if result and len(result) == len(points):
-                    _last_source = "lidar"
                     print(f"[DEM] Using LiDAR: {os.path.basename(lidar_path)}")
-                    return result
+                    return result, "lidar"
         except Exception as e:
             print(f"[DEM] LiDAR check failed: {e}")
 
@@ -186,25 +178,22 @@ async def fetch_elevations(
     if bbox and _get_opentopo_key():
         try:
             result = await _fetch_opentopo(points, bbox)
-            _last_source = "alos_world3d"
             print("[DEM] Using OpenTopography ALOS World 3D")
-            return result
+            return result, "alos_world3d"
         except Exception as e:
             print(f"[DEM] OpenTopography failed: {e}")
 
     # 3. Try Open-Elevation
     try:
         result = await _fetch_open_elevation(points)
-        _last_source = "open_elevation_srtm"
         print("[DEM] Using Open-Elevation (SRTM)")
-        return result
+        return result, "open_elevation_srtm"
     except Exception as e:
         print(f"[DEM] Open-Elevation failed: {e}")
 
     # 4. Synthetic fallback
-    _last_source = "synthetic"
     print("[DEM] Using synthetic elevation (offline mode)")
-    return _synthetic_elevations(points)
+    return _synthetic_elevations(points), "synthetic"
 
 
 # ---------------------------------------------------------------------------

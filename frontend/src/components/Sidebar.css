@@ -1,3 +1,8 @@
+/* ================================================================
+   GeologgIA Map — Sidebar Styles
+   Premium dark sidebar with glassmorphism
+   ================================================================ */
+
 .sidebar {
     position: absolute;
     top: 0;
@@ -14,6 +19,9 @@
     border-top: none;
     border-bottom: none;
     transition: transform var(--transition-slow);
+    background: var(--bg-glass);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
 }
 
 .sidebar--collapsed {
@@ -35,16 +43,21 @@
     color: var(--text-secondary) !important;
     transition: all var(--transition-slow);
 }
+.sidebar-toggle:hover {
+    color: var(--accent-teal) !important;
+    border-color: var(--border-accent) !important;
+}
 
 .sidebar--collapsed~.sidebar-toggle,
 .sidebar-toggle:has(+ .sidebar--collapsed) {
     left: 8px;
 }
 
-/* Header */
+/* ---- Header ---- */
 .sidebar-header {
     padding: var(--space-4) var(--space-4) var(--space-3);
     border-bottom: 1px solid var(--border-glass);
+    background: linear-gradient(180deg, rgba(14,165,233,0.04) 0%, transparent 100%);
 }
 
 .sidebar-brand {
@@ -54,43 +67,56 @@
 }
 
 .brand-icon {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
-    background: rgba(0, 210, 255, 0.08);
+    border-radius: var(--radius-md);
+    background: var(--accent-gradient-subtle);
+    border: 1px solid rgba(14, 165, 233, 0.15);
+    box-shadow: 0 0 16px rgba(14, 165, 233, 0.08);
 }
 
 .brand-title {
-    font-size: var(--font-lg);
+    font-size: 1.15rem;
     font-weight: 800;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.4px;
     background: var(--accent-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    line-height: 1.2;
 }
 
 .brand-subtitle {
-    font-size: var(--font-xs);
+    font-size: 0.65rem;
     color: var(--text-muted);
     font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
-/* Sections */
+/* ---- Sections ---- */
 .sidebar-section {
-    padding: var(--space-4);
+    padding: var(--space-3) var(--space-4);
     border-bottom: 1px solid var(--border-glass);
 }
 
-/* Layer toggles */
+/* ---- Layer toggles ---- */
 .layer-toggle {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--space-2) 0;
+    padding: 6px 0;
+    transition: all var(--transition-fast);
+}
+.layer-toggle:hover {
+    background: rgba(255, 255, 255, 0.02);
+    margin: 0 -4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: var(--radius-sm);
 }
 
 .layer-label {
@@ -100,6 +126,10 @@
     font-size: var(--font-sm);
     color: var(--text-secondary);
     cursor: pointer;
+    transition: color var(--transition-fast);
+}
+.layer-label:hover {
+    color: var(--text-primary);
 }
 
 .layer-dot {
@@ -107,18 +137,103 @@
     height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
+    box-shadow: 0 0 6px currentColor;
 }
 
-/* Actions */
+/* ---- Actions ---- */
 .action-buttons {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
 }
 
+/* ---- Shapefile section styles ---- */
+.shp-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 10px 0;
+    cursor: pointer;
+    background: rgba(14, 165, 233, 0.08);
+    border: 1px dashed rgba(14, 165, 233, 0.35);
+    border-radius: var(--radius-sm);
+    color: var(--accent-teal);
+    font-size: var(--font-sm);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    margin-bottom: 8px;
+}
+.shp-upload-label:hover {
+    background: rgba(14, 165, 233, 0.14);
+    border-color: rgba(14, 165, 233, 0.5);
+    box-shadow: 0 0 12px rgba(14, 165, 233, 0.1);
+}
+
+.shp-help-text {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* ---- Resolution toggle ---- */
+.resolution-toggle {
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.25);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    margin-bottom: 8px;
+}
+.resolution-toggle .toggle-btn {
+    flex: 1;
+    padding: 6px 0;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-xs);
+    font-weight: 600;
+    transition: all 0.2s;
+    font-family: var(--font-family);
+}
+.resolution-toggle .toggle-btn--active {
+    background: rgba(14, 165, 233, 0.2);
+    color: var(--accent-teal);
+}
+.resolution-toggle .toggle-btn--inactive {
+    background: transparent;
+    color: var(--text-muted);
+}
+.resolution-toggle .toggle-btn--inactive:hover {
+    color: var(--text-secondary);
+}
+
+/* ---- Base map toggle ---- */
+.basemap-toggle {
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.25);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    margin-bottom: 12px;
+}
+.basemap-toggle .basemap-btn {
+    flex: 1;
+    padding: 7px 0;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-xs);
+    font-weight: 600;
+    transition: all 0.2s;
+    font-family: var(--font-family);
+}
+
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
-        max-width: 320px;
+        max-width: 340px;
     }
 }

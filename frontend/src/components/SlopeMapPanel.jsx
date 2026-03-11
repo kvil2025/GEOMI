@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import SlopeHistogram from './SlopeHistogram';
 import './SlopeMapPanel.css';
 
 const DEFAULT_RANGES = [
@@ -14,6 +15,7 @@ const DEFAULT_RANGES = [
 export default function SlopeMapPanel({
     onStartDrawing,
     onGenerateSlope,
+    onExportSlope,
     slopeLoading,
     slopeData,
     slopeRectBbox,
@@ -75,7 +77,14 @@ export default function SlopeMapPanel({
         onGenerateSlope?.(slopeRectBbox, resolution, ranges);
     };
 
+    const handleExport = () => {
+        if (!slopeData) return;
+        onExportSlope?.(slopeData.bbox, slopeData.grid_size);
+    };
+
     const stats = slopeData?.stats;
+    const processing = slopeData?.processing;
+    const histogram = slopeData?.histogram;
 
     return (
         <div className="sidebar-section slope-panel">
@@ -110,14 +119,15 @@ export default function SlopeMapPanel({
                 )}
             </button>
 
-            {/* Step 2: Resolution */}
+            {/* Step 2: Resolution – improved labels */}
             <div className="slope-resolution">
                 <label>Resolución:</label>
                 <select value={resolution} onChange={(e) => setResolution(Number(e.target.value))}>
-                    <option value={15}>Baja (15×15)</option>
-                    <option value={30}>Media (30×30)</option>
-                    <option value={50}>Alta (50×50)</option>
-                    <option value={80}>Muy Alta (80×80)</option>
+                    <option value={10}>Rápida (10×10 · 100 pts)</option>
+                    <option value={20}>Baja (20×20 · 400 pts)</option>
+                    <option value={30}>Media (30×30 · 900 pts)</option>
+                    <option value={50}>Alta (50×50 · 2,500 pts)</option>
+                    <option value={80}>Muy Alta (80×80 · 6,400 pts)</option>
                 </select>
             </div>
 
@@ -200,24 +210,60 @@ export default function SlopeMapPanel({
                         <div className="slope-stat-value">{stats.max_slope_pct?.toFixed(1) ?? stats.max_slope}%</div>
                         <div className="slope-stat-label">Máx</div>
                     </div>
+                    {stats.std_slope_pct != null && (
+                        <div className="slope-stat">
+                            <div className="slope-stat-value">{stats.std_slope_pct.toFixed(1)}%</div>
+                            <div className="slope-stat-label">Desv.</div>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Histogram */}
+            <SlopeHistogram
+                histogram={histogram}
+                ranges={ranges}
+                visible={!!slopeData}
+            />
+
+            {/* Processing info */}
+            {processing && (
+                <div className="slope-processing-info">
+                    <span title="Suavizado Gaussiano adaptativo">
+                        σ={processing.gaussian_sigma}
+                    </span>
+                    <span title="Tamaño de celda">
+                        {processing.pixel_size_m?.x?.toFixed(0) ?? '?'}×{processing.pixel_size_m?.y?.toFixed(0) ?? '?'}m
+                    </span>
                 </div>
             )}
 
             {/* Source indicator */}
             {slopeData?.source_label && (
-                <div style={{
-                    fontSize: '0.67rem', opacity: 0.6, marginTop: 6,
-                    display: 'flex', alignItems: 'center', gap: 4,
-                }}>
-                    <span style={{
-                        width: 6, height: 6, borderRadius: '50%',
+                <div className="slope-source-info">
+                    <span className="slope-source-dot" style={{
                         background: slopeData.source === 'lidar' ? '#4caf50' :
                             slopeData.source === 'alos_world3d' ? '#2196f3' :
                                 slopeData.source === 'open_elevation_srtm' ? '#ff9800' : '#f44336',
-                        display: 'inline-block',
                     }} />
                     Fuente: {slopeData.source_label}
                 </div>
+            )}
+
+            {/* Export button */}
+            {slopeData && (
+                <button
+                    className="slope-export-btn"
+                    onClick={handleExport}
+                    title="Exportar como GeoJSON para QGIS u otro SIG"
+                >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Exportar GeoJSON
+                </button>
             )}
         </div>
     );

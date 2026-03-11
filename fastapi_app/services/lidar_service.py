@@ -13,7 +13,10 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 router = APIRouter()
 
 _LIDAR_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'lidar')
-os.makedirs(_LIDAR_DIR, exist_ok=True)
+try:
+    os.makedirs(_LIDAR_DIR, exist_ok=True)
+except OSError:
+    pass  # Directory may already exist with restricted permissions
 
 # Accepted extensions
 _ALLOWED_EXT = {'.tif', '.tiff', '.geotiff'}

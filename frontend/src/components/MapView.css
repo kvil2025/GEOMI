@@ -81,3 +81,118 @@
 .maplibregl-ctrl-group button span {
     filter: invert(1);
 }
+
+/* Geology legend */
+.geology-legend {
+    position: absolute;
+    bottom: 40px;
+    right: 50px;
+    background: rgba(15, 20, 30, 0.92);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    z-index: 10;
+    min-width: 200px;
+    max-width: 280px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.geology-legend-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    user-select: none;
+}
+
+.geology-legend-header:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.geology-legend-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #e0e0e0;
+    letter-spacing: 0.3px;
+}
+
+.geology-legend-toggle {
+    font-size: 10px;
+    color: #888;
+}
+
+.geology-legend-body {
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 6px 0;
+}
+
+.geology-legend-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.geology-legend-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+.geology-legend-group {
+    padding: 2px 0;
+}
+
+.geology-legend-era {
+    font-size: 10px;
+    font-weight: 700;
+    color: #00d2ff;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 6px 12px 3px;
+    opacity: 0.85;
+}
+
+.geology-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 12px;
+    transition: background 0.15s;
+}
+
+.geology-legend-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.geology-legend-swatch {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.geology-legend-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+}
+
+.geology-legend-code {
+    font-size: 11px;
+    font-weight: 600;
+    color: #e0e0e0;
+    font-family: 'SF Mono', 'Monaco', monospace;
+}
+
+.geology-legend-desc {
+    font-size: 9px;
+    color: #999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}

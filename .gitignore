@@ -5,8 +5,12 @@ __pycache__/
 .env
 fastapi_app/data/cache/
 fastapi_app/data/lidar/
+fastapi_app/data/geology_cache*.json
 frontend/dist/
 data/
+geodata/
+deps/
+*.so
 .DS_Store
 .agent/
 .gemini/

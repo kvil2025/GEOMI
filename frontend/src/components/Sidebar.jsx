@@ -7,6 +7,10 @@ import './Sidebar.css';
 export default function Sidebar({
     onFileLoad,
     onLoadConcessions,
+    onLoadGeology,
+    geologyLoading,
+    geoSimplify,
+    onGeoSimplifyChange,
     concessionsLoading,
     slopeLoading,
     slopeSource,
@@ -20,13 +24,17 @@ export default function Sidebar({
     drawingMode,
     onStartDrawing,
     onGenerateSlope,
+    onExportSlope,
     slopeRectBbox,
     slopeRanges,
     onRangesChange,
+    onShapefileUpload,
+    onExportShapefile,
 }) {
     const [collapsed, setCollapsed] = useState(false);
     const [lidarFiles, setLidarFiles] = useState([]);
     const [uploadingLidar, setUploadingLidar] = useState(false);
+    const [shpUploading, setShpUploading] = useState(false);
 
     // Fetch LiDAR files on mount
     useEffect(() => {
@@ -91,21 +99,23 @@ export default function Sidebar({
                 <div className="sidebar-header">
                     <div className="sidebar-brand">
                         <div className="brand-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="url(#brandGrad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="url(#brandGrad)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                                 <defs>
                                     <linearGradient id="brandGrad" x1="0" y1="0" x2="1" y2="1">
-                                        <stop offset="0%" stopColor="#00d2ff" />
-                                        <stop offset="100%" stopColor="#7c3aed" />
+                                        <stop offset="0%" stopColor="#22d3ee" />
+                                        <stop offset="50%" stopColor="#0ea5e9" />
+                                        <stop offset="100%" stopColor="#8b5cf6" />
                                     </linearGradient>
                                 </defs>
-                                <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
-                                <line x1="12" y1="22" x2="12" y2="15.5" />
-                                <polyline points="22 8.5 12 15.5 2 8.5" />
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M2 12h20" />
+                                <path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10" />
+                                <path d="M12 2a15 15 0 0 0-4 10 15 15 0 0 0 4 10" />
                             </svg>
                         </div>
                         <div>
-                            <h1 className="brand-title">Mining Intel</h1>
-                            <span className="brand-subtitle">Dashboard Chile</span>
+                            <h1 className="brand-title">GeologgIA Map</h1>
+                            <span className="brand-subtitle">Inteligencia Geológica</span>
                         </div>
                     </div>
                 </div>
@@ -122,35 +132,28 @@ export default function Sidebar({
                     </h4>
 
                     {/* Base map selector */}
-                    <div style={{
-                        display: 'flex', gap: 4, marginBottom: 12,
-                        background: 'rgba(0,0,0,0.2)', borderRadius: 8, padding: 3,
-                    }}>
+                    <div className="basemap-toggle">
                         <button
+                            className="basemap-btn"
                             onClick={() => onBaseMapChange?.('carto')}
                             style={{
-                                flex: 1, padding: '6px 0', borderRadius: 6,
-                                border: 'none', cursor: 'pointer', fontSize: '0.7rem',
-                                fontWeight: 600, transition: 'all 0.2s',
-                                background: baseMap === 'carto' ? 'rgba(0,210,255,0.25)' : 'transparent',
-                                color: baseMap === 'carto' ? '#00d2ff' : 'rgba(255,255,255,0.5)',
+                                background: baseMap === 'carto' ? 'rgba(14,165,233,0.2)' : 'transparent',
+                                color: baseMap === 'carto' ? '#0ea5e9' : 'rgba(255,255,255,0.4)',
                             }}
                         >🗺 Estándar</button>
                         <button
+                            className="basemap-btn"
                             onClick={() => onBaseMapChange?.('topo')}
                             style={{
-                                flex: 1, padding: '6px 0', borderRadius: 6,
-                                border: 'none', cursor: 'pointer', fontSize: '0.7rem',
-                                fontWeight: 600, transition: 'all 0.2s',
-                                background: baseMap === 'topo' ? 'rgba(76,175,80,0.25)' : 'transparent',
-                                color: baseMap === 'topo' ? '#4caf50' : 'rgba(255,255,255,0.5)',
+                                background: baseMap === 'topo' ? 'rgba(16,185,129,0.2)' : 'transparent',
+                                color: baseMap === 'topo' ? '#10b981' : 'rgba(255,255,255,0.4)',
                             }}
                         >⛰ Topográfico</button>
                     </div>
 
                     <div className="layer-toggle">
                         <label className="layer-label">
-                            <span className="layer-dot" style={{ background: '#00d2ff' }} />
+                            <span className="layer-dot" style={{ background: '#0ea5e9' }} />
                             Concesiones Mineras
                         </label>
                         <input
@@ -186,12 +189,80 @@ export default function Sidebar({
                             onChange={() => onToggleLayer('userData')}
                         />
                     </div>
+
+                    <div className="layer-toggle">
+                        <label className="layer-label">
+                            <span className="layer-dot" style={{ background: '#FFE066' }} />
+                            Geología de Chile
+                        </label>
+                        <input
+                            type="checkbox"
+                            className="toggle"
+                            checked={layers.geology}
+                            onChange={() => onToggleLayer('geology')}
+                        />
+                    </div>
+                </div>
+
+                {/* Geology Panel */}
+                <div className="sidebar-section">
+                    <h4 className="section-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 22c-4.97 0-9-2.24-9-5v-4" />
+                            <path d="M3 8c0-2.76 4.03-5 9-5s9 2.24 9 5" />
+                            <path d="M21 8v4c0 2.76-4.03 5-9 5" />
+                            <path d="M3 13c0 2.76 4.03 5 9 5" />
+                        </svg>
+                        Mapa Geológico
+                    </h4>
+
+                    <p style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)', margin: '0 0 8px 0' }}>
+                        Litología de la zona visible con colores por unidad geológica.
+                    </p>
+
+                    {/* Resolution toggle */}
+                    <div className="resolution-toggle">
+                        <button
+                            className={`toggle-btn ${geoSimplify ? 'toggle-btn--active' : 'toggle-btn--inactive'}`}
+                            onClick={() => onGeoSimplifyChange?.(true)}
+                        >
+                            ⚡ Rápida
+                        </button>
+                        <button
+                            className={`toggle-btn ${!geoSimplify ? 'toggle-btn--active' : 'toggle-btn--inactive'}`}
+                            onClick={() => onGeoSimplifyChange?.(false)}
+                        >
+                            🔬 Alta Res
+                        </button>
+                    </div>
+
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => onLoadGeology?.(geoSimplify)}
+                        disabled={geologyLoading}
+                        style={{ width: '100%' }}
+                    >
+                        {geologyLoading ? (
+                            <>
+                                <span className="map-loading-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} />
+                                Cargando Geología…
+                            </>
+                        ) : (
+                            <>🪨 Cargar Mapa Geológico</>
+                        )}
+                    </button>
+
+                    <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.35)', margin: '6px 0 0 0', lineHeight: 1.3 }}>
+                        ⚡ Rápida: geometrías simplificadas, carga instantánea.<br/>
+                        🔬 Alta Resolución: detalle completo de polígonos.
+                    </p>
                 </div>
 
                 {/* Slope Map Panel (NEW) */}
                 <SlopeMapPanel
                     onStartDrawing={onStartDrawing}
                     onGenerateSlope={onGenerateSlope}
+                    onExportSlope={onExportSlope}
                     slopeLoading={slopeLoading}
                     slopeData={slopeData}
                     slopeRectBbox={slopeRectBbox}
@@ -295,14 +366,73 @@ export default function Sidebar({
                     )}
                 </div>
 
-                {/* File drop */}
+                {/* Shapefile Import / Export */}
                 <div className="sidebar-section">
                     <h4 className="section-title">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                             <polyline points="14 2 14 8 20 8" />
                         </svg>
-                        Importar Datos
+                        Importar / Exportar
+                    </h4>
+
+                    {/* Shapefile Upload */}
+                    <label
+                        className="shp-upload-label"
+                        style={{ cursor: shpUploading ? 'wait' : 'pointer' }}
+                    >
+                        {shpUploading ? (
+                            <><span className="map-loading-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Procesando…</>
+                        ) : (
+                            <>📂 Cargar Shapefile (.shp)</>
+                        )}
+                        <input
+                            type="file"
+                            accept=".shp,.shx,.dbf,.prj,.cpg"
+                            multiple
+                            style={{ display: 'none' }}
+                            disabled={shpUploading}
+                            onChange={async (e) => {
+                                const files = Array.from(e.target.files || []);
+                                if (files.length === 0) return;
+                                setShpUploading(true);
+                                try {
+                                    await onShapefileUpload?.(files);
+                                } finally {
+                                    setShpUploading(false);
+                                }
+                                e.target.value = '';
+                            }}
+                        />
+                    </label>
+
+                    <p className="shp-help-text" style={{ marginBottom: 10 }}>
+                        Selecciona .shp + .shx + .dbf (y opcionalmente .prj, .cpg).
+                        Se reproyectará automáticamente a WGS84.
+                    </p>
+
+                    {/* Export Shapefile */}
+                    <button
+                        className="btn btn-ghost"
+                        style={{ width: '100%', fontSize: '0.78rem', gap: 6 }}
+                        onClick={() => onExportShapefile?.()}
+                    >
+                        📥 Exportar a Shapefile
+                    </button>
+
+                    <p className="shp-help-text" style={{ marginTop: 4 }}>
+                        Exporta todas las capas visibles como .shp (ZIP).
+                    </p>
+                </div>
+
+                {/* File drop GeoJSON */}
+                <div className="sidebar-section">
+                    <h4 className="section-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                        Importar GeoJSON
                     </h4>
                     <FileDropZone onFileLoad={onFileLoad} />
                 </div>

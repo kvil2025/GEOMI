@@ -14,6 +14,8 @@ from .services.dem_service import router as dem_router
 from .services.lidar_service import router as lidar_router
 from .services.intersection_service import router as intersect_router
 from .services.elevation_profile import router as profile_router
+from .services.geology_service import router as geology_router
+from .services.shapefile_service import router as shapefile_router
 
 app = FastAPI(title="Mining Intelligence Dashboard Backend", version="0.1.0")
 
@@ -31,6 +33,8 @@ app.include_router(dem_router, prefix="/dem", tags=["DEM"])
 app.include_router(lidar_router, prefix="/dem", tags=["LiDAR"])
 app.include_router(intersect_router, prefix="/intersection", tags=["Intersection"])
 app.include_router(profile_router, prefix="/profile", tags=["Elevation Profile"])
+app.include_router(geology_router, prefix="/geology", tags=["Geology"])
+app.include_router(shapefile_router, prefix="/shapefile", tags=["Shapefile"])
 
 @app.get("/health")
 async def health_check():

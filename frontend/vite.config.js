@@ -10,6 +10,7 @@ export default defineConfig({
             '/dem': 'http://localhost:8000',
             '/intersection': 'http://localhost:8000',
             '/profile': 'http://localhost:8000',
+            '/geology': 'http://localhost:8000',
             '/health': 'http://localhost:8000',
         },
     },
