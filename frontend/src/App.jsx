@@ -23,11 +23,6 @@ export default function App() {
     const [bbox, setBbox] = useState(null);
     const [user, setUser] = useState(null);
 
-    // Show login screen if not authenticated
-    if (!user) {
-        return <LoginScreen onLogin={setUser} />;
-    }
-
     // Layer visibility
     const [layers, setLayers] = useState({
         concessions: true,
@@ -261,6 +256,11 @@ export default function App() {
             showToast(`Error exportando: ${err.message}`, 'error');
         }
     }, [layers, geologyData, userGeoJSON, concessions]);
+
+    // Show login screen if not authenticated (must be AFTER all hooks)
+    if (!user) {
+        return <LoginScreen onLogin={setUser} />;
+    }
 
     return (
         <ToastProvider>
