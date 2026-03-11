@@ -1,0 +1,154 @@
+.login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #0d1117;
+    background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+    padding: 20px;
+}
+
+.login-card {
+    background: rgba(22, 27, 34, 0.85);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 24px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 24px 48px rgba(0, 0, 0, 0.4),
+        0 0 80px rgba(14, 165, 233, 0.05);
+    animation: loginAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes loginAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.login-logo {
+    margin-bottom: 20px;
+    animation: loginPulse 3s ease-in-out infinite;
+}
+
+@keyframes loginPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+}
+
+.login-title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.login-subtitle {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin: 6px 0 0;
+}
+
+.login-divider {
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.3), rgba(139, 92, 246, 0.3), transparent);
+    margin: 28px 0;
+}
+
+.login-description {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    line-height: 1.6;
+    margin: 0 0 28px;
+}
+
+.login-google-btn {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 12px;
+    width: 100%;
+}
+
+.login-error span {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.login-error p {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 13px;
+    color: #fca5a5;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.login-footer {
+    margin-top: 32px;
+}
+
+.login-footer p {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0;
+}
+
+.login-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(14, 165, 233, 0.2);
+    border-top-color: #0ea5e9;
+    border-radius: 50%;
+    animation: loginSpin 0.8s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes loginSpin {
+    to { transform: rotate(360deg); }
+}
+
+.login-loading-text {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0;
+}

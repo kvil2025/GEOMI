@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import MapView from './components/MapView';
 import Sidebar from './components/Sidebar';
 import ElevationChart from './components/ElevationChart';
+import LoginScreen from './components/LoginScreen';
 import ToastProvider, { showToast } from './components/Toast';
 import { useApi } from './hooks/useApi';
 import {
@@ -20,6 +21,12 @@ import './App.css';
 export default function App() {
     const mapRef = useRef(null);
     const [bbox, setBbox] = useState(null);
+    const [user, setUser] = useState(null);
+
+    // Show login screen if not authenticated
+    if (!user) {
+        return <LoginScreen onLogin={setUser} />;
+    }
 
     // Layer visibility
     const [layers, setLayers] = useState({

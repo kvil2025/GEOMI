@@ -1,0 +1,14 @@
+venv/
+node_modules/
+__pycache__/
+*.pyc
+.env
+.git/
+.gitignore
+.DS_Store
+.agent/
+.gemini/
+deps/
+frontend/dist/
+frontend/node_modules/
+*.md
