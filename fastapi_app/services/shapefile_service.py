@@ -20,8 +20,11 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-_UPLOAD_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'geodata', 'uploads')
-os.makedirs(_UPLOAD_DIR, exist_ok=True)
+_UPLOAD_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', 'geodata', 'uploads'))
+try:
+    os.makedirs(_UPLOAD_DIR, exist_ok=True)
+except OSError:
+    pass  # Directory already exists or cannot be created in this environment
 
 
 # ── Upload & Convert Shapefile ────────────────────────────────────────

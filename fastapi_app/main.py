@@ -116,10 +116,16 @@ async def health_check():
 
 # ----- Serve Frontend Static Files (Production) -----
 _frontend_dist = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+_frontend_assets = _frontend_dist / "assets"
 
-if _frontend_dist.exists():
+try:
+    _serve_frontend = _frontend_dist.exists() and _frontend_assets.exists()
+except (PermissionError, OSError):
+    _serve_frontend = False
+
+if _serve_frontend:
     # Serve static assets (JS, CSS, images)
-    app.mount("/assets", StaticFiles(directory=str(_frontend_dist / "assets")), name="assets")
+    app.mount("/assets", StaticFiles(directory=str(_frontend_assets)), name="assets")
 
     # Catch-all route for SPA — must be LAST
     @app.get("/{full_path:path}")
